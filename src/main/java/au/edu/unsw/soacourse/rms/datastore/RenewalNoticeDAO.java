@@ -1,14 +1,12 @@
 package au.edu.unsw.soacourse.rms.datastore;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,33 +17,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import au.edu.unsw.soacourse.rms.data.Driver;
 import au.edu.unsw.soacourse.rms.data.RenewalNotice;
+import au.edu.unsw.soacourse.rms.data.Status;
 
 public class RenewalNoticeDAO {
-	
+	private List<RenewalNotice> renewals = new ArrayList<RenewalNotice>();
+
 	public RenewalNotice retrieve(String rego) {
-		RenewalNotice rNotice = new RenewalNotice();
-	
-		NodeList nodes = getRenewalEntries();
+		RenewalNotice rNotice = null;
 		
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node node = nodes.item(i);
-			if (node.getNodeType() == Node.ELEMENT_NODE) {
-				Element element = (Element) node;
-				
-				if (element.getElementsByTagName("RegistrationNumber").item(0).getTextContent().equals(rego)) {
-					
-					Element driverEl = (Element) element.getElementsByTagName("Driver").item(0);
-					Driver driver = new Driver();
-					driver.setLastName(driverEl.getElementsByTagName("LastName").item(0).getTextContent());
-					driver.setFirstName(driverEl.getElementsByTagName("FirstName").item(0).getTextContent());
-					driver.setEmail(driverEl.getElementsByTagName("Email").item(0).getTextContent());
-					driver.setLicenseNumber(driverEl.getElementsByTagName("DriversLicenseNo").item(0).getTextContent());
-					
-					rNotice.setDriver(driver);
-					rNotice.setRid(element.getElementsByTagName("_rid").item(0).getTextContent());
-					rNotice.setValidTill(element.getElementsByTagName("RegistrationValidTill").item(0).getTextContent());
-					rNotice.setRegistrationNumber(element.getElementsByTagName("RegistrationNumber").item(0).getTextContent());
-				}
+		for (RenewalNotice renewal : renewals) {
+			if (renewal.getRegistrationNumber().equals(rego)) {
+				rNotice = renewal;
 			}
 		}
 		
@@ -73,6 +55,22 @@ public class RenewalNoticeDAO {
 					Date oneMonthBeforeRego = cal.getTime();
 					
 					if (currentDate.after(oneMonthBeforeRego) && currentDate.before(regoDate)) {
+						RenewalNotice rNotice = new RenewalNotice();
+						
+						Element driverEl = (Element) element.getElementsByTagName("Driver").item(0);
+						Driver driver = new Driver();
+						driver.setLastName(driverEl.getElementsByTagName("LastName").item(0).getTextContent());
+						driver.setFirstName(driverEl.getElementsByTagName("FirstName").item(0).getTextContent());
+						driver.setEmail(driverEl.getElementsByTagName("Email").item(0).getTextContent());
+						driver.setLicenseNumber(driverEl.getElementsByTagName("DriversLicenseNo").item(0).getTextContent());
+						
+						rNotice.setDriver(driver);
+						rNotice.setRid(element.getElementsByTagName("_rid").item(0).getTextContent());
+						rNotice.setValidTill(element.getElementsByTagName("RegistrationValidTill").item(0).getTextContent());
+						rNotice.setRegistrationNumber(element.getElementsByTagName("RegistrationNumber").item(0).getTextContent());
+						rNotice.setStatus(Status.CREATED);
+						renewals.add(rNotice);
+						
 						regosDue.add(element.getElementsByTagName("RegistrationNumber").item(0).getTextContent());
 					}
 				} catch (Exception e) {

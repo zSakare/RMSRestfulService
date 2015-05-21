@@ -7,6 +7,7 @@ public class RenewalNotice {
 	private String registrationNumber;
 	private Driver driver;
 	private String validTill;
+	private Status status;
 	
 	public String getRid() {
 		return rid;
@@ -38,5 +39,13 @@ public class RenewalNotice {
 	
 	public void setValidTill(String validTill) {
 		this.validTill = validTill;
+	}
+	
+	public String getStatus() {
+		return this.status != null ? this.status.getStatus() : "";
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 }
