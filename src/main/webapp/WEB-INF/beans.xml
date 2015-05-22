@@ -5,9 +5,14 @@
     <context:annotation-config/>
     <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
     <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
+    <bean id="renewalNoticeDAO" class="au.edu.unsw.soacourse.rms.datastore.RenewalNoticeDAO"/>
+    <bean id="paymentDAO" class="au.edu.unsw.soacourse.rms.datastore.PaymentDAO"/>
+    <bean id="carRegistrationDAO" class="au.edu.unsw.soacourse.rms.datastore.CarRegistrationDAO"/>
     <jaxrs:server id="services" address="/">
         <jaxrs:serviceBeans>
             <bean class="au.edu.unsw.soacourse.rms.RenewalNoticeService"/>
+            <bean class="au.edu.unsw.soacourse.rms.PaymentService"/>
+            <bean class="au.edu.unsw.soacourse.rms.CarRegistrationService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
