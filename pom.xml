@@ -11,6 +11,11 @@
         <jackson.version>1.8.6</jackson.version>
     </properties>
     <dependencies>
+    	<dependency>
+			<groupId>net.sf.saxon</groupId>
+			<artifactId>Saxon-HE</artifactId>
+			<version>9.4</version>
+		</dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
