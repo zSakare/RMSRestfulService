@@ -1,6 +1,7 @@
 package au.edu.unsw.soacourse.rms.datastore;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +39,9 @@ public class CarRegistrationDAO {
 	}
 	
 	private NodeList getRegistrationEntries() {
+		ClassLoader cl = this.getClass().getClassLoader();
 		NodeList nodes = null;
-		File renewalXML = new File(System.getProperty("catalina.home") + File.separator +
-								   "webapps" + File.separator +
-								   "ROOT" + File.separator +
-								   "database" + File.separator +
-								   "renewals.xml");
+		InputStream renewalXML = cl.getResourceAsStream("renewals.xml");
 		 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try {

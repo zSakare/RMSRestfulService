@@ -1,10 +1,7 @@
 package au.edu.unsw.soacourse.rms.datastore;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -63,14 +60,12 @@ public class CarRegistrationDataDAO {
 	}
 	
 	public List<String> listAllVehicleTypes() {
-		List<String> tempList = new ArrayList<String>();
-		Collections.copy(tempList, vehicleTypes);
+		List<String> tempList = new ArrayList<String>(vehicleTypes);
 		return tempList;
 	}
 	
 	public List<String> listAllFuelTypes() {
-		List<String> tempList = new ArrayList<String>();
-		Collections.copy(tempList, fuelTypes);
+		List<String> tempList = new ArrayList<String>(fuelTypes);
 		return tempList;
 	}
 
@@ -111,12 +106,9 @@ public class CarRegistrationDataDAO {
 	}
 	
 	private NodeList getPostcodeRegistrationEntries() {
+		ClassLoader cl = this.getClass().getClassLoader();
 		NodeList nodes = null;
-		File renewalXML = new File(System.getProperty("catalina.home") + File.separator +
-								   "webapps" + File.separator +
-								   "ROOT" + File.separator +
-								   "database" + File.separator +
-								   "outputpostcodes.xml");
+		InputStream renewalXML = cl.getResourceAsStream("outputpostcodes.xml");
 		 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try {
@@ -131,12 +123,9 @@ public class CarRegistrationDataDAO {
 	}
 	
 	private NodeList getFuelTypeRegistrationEntries() {
+		ClassLoader cl = this.getClass().getClassLoader();
 		NodeList nodes = null;
-		File renewalXML = new File(System.getProperty("catalina.home") + File.separator +
-								   "webapps" + File.separator +
-								   "ROOT" + File.separator +
-								   "database" + File.separator +
-								   "outputfueltypes.xml");
+		InputStream renewalXML = cl.getResourceAsStream("outputfueltypes.xml");
 		 
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		try {
