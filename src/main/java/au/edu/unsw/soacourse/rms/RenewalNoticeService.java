@@ -50,7 +50,21 @@ public class RenewalNoticeService {
     @Produces("application/json")
     public Response updateRenewal(@QueryParam("rego") String rego, @QueryParam("status") String status) {
     	RenewalNotice renewal = renewalNoticeDAO.retrieve(rego);
-    	renewal.setStatus(Status.valueOf(status));
+    	
+    	if (status != null && !status.isEmpty()) {
+    		Status newStatus = Status.valueOf(status);
+    		if (!newStatus.equals(Status.ARCHIVED) && "archived".equals(renewal.getStatus())) {
+    			// cannot set status after archiving.
+        		return Response.notModified().entity(renewal).build();
+    		} else if (newStatus.equals(Status.CANCELLED) && renewal.getStatus().equals("under-review")) {
+    			// cannot cancel while under review.
+        		return Response.notModified().entity(renewal).build();
+    		} else {
+    			renewal.setStatus(newStatus);
+    		}
+    	} else {
+    		return Response.notModified().entity(renewal).build();
+    	}
     	
     	return Response.ok().entity(renewal).build();
     }
@@ -62,6 +76,8 @@ public class RenewalNoticeService {
     	RenewalNotice renewal = renewalNoticeDAO.retrieve(rego);
     	if (renewal.getStatus().equals("rejected") || renewal.getStatus().equals("cancelled")) {
     		renewal.setStatus(Status.ARCHIVED);
+    	} else {
+    		return Response.notModified().build();
     	}
     	
     	return Response.ok().build();
