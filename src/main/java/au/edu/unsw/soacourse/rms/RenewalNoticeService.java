@@ -19,6 +19,8 @@ import au.edu.unsw.soacourse.rms.datastore.RenewalNoticeDAO;
 
 @Path("/renewal")
 public class RenewalNoticeService {
+	private final static String OFFICER_KEY = "officer";
+	private final static String DRIVER_KEY = "driver";
 	
 	@Autowired
 	private RenewalNoticeDAO renewalNoticeDAO;
@@ -34,7 +36,13 @@ public class RenewalNoticeService {
     @POST
     @Path("/notice/generate")
     @Produces("application/json")
-    public Response generateRenewals() throws ParseException {
+    public Response generateRenewals(@QueryParam("auth") String key) throws ParseException {
+		if (key == null || key.isEmpty()) {
+			return Response.status(401).build();
+		} else if (!key.equals(OFFICER_KEY)) {
+			return Response.status(403).build();
+		}
+		
     	List<String> regosDue = renewalNoticeDAO.generate();
     	
     	for (int i = 0; i < regosDue.size(); i++) {
@@ -72,9 +80,15 @@ public class RenewalNoticeService {
     @DELETE
     @Path("/notice/archive")
     @Produces("application/json")
-    public Response archiveRenewal(@QueryParam("rego") String rego) {
+    public Response archiveRenewal(@QueryParam("rego") String rego, @QueryParam("auth") String key) {
+		if (key == null || key.isEmpty()) {
+			return Response.status(401).build();
+		} else if (!key.equals(DRIVER_KEY)) {
+			return Response.status(403).build();
+		}
+		
     	RenewalNotice renewal = renewalNoticeDAO.retrieve(rego);
-    	if (renewal.getStatus().equals("rejected") || renewal.getStatus().equals("cancelled")) {
+    	if (renewal.getStatus().equals("rejected") || renewal.getStatus().equals("cancelled") || renewal.getStatus().equals("paid")) {
     		renewal.setStatus(Status.ARCHIVED);
     	} else {
     		return Response.notModified().build();

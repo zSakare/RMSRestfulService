@@ -1,11 +1,20 @@
 package au.edu.unsw.soacourse.rms.datastore;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -103,6 +112,33 @@ public class CarRegistrationDataDAO {
 		}
 		
 		return filteredList;
+	}
+	
+	public String getAllVehicleTypesXML(String sortBy) {
+		ClassLoader cl = this.getClass().getClassLoader();
+		InputStream xsl = cl.getResourceAsStream("allVehicleTypes.xsl");
+		InputStream xml = cl.getResourceAsStream("outputfueltypes.xml");
+		Source xslSource = new StreamSource(xsl);
+		Source xmlSource = new StreamSource(xml);
+		
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance().newTransformer(xslSource);
+			if (sortBy != null) {
+				transformer.setParameter("sort", sortBy);
+			}
+			transformer.transform(xmlSource, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		StringBuffer sb = writer.getBuffer();
+		String returnXml = sb.toString();
+		
+		return returnXml;
 	}
 	
 	private NodeList getPostcodeRegistrationEntries() {

@@ -1,5 +1,7 @@
 package au.edu.unsw.soacourse.rms;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -126,5 +128,48 @@ public class CarRegistrationDataService {
 		}
 		
 		return Response.ok().entity(postcodeTypeRegistrations).build();
+	}
+	
+	@GET
+	@Path("/xml/fueltypes")
+	@Produces("application/xml")
+	public Response getFuelTypeXML() throws IOException {
+		ClassLoader cl = this.getClass().getClassLoader();
+		InputStream xml = cl.getResourceAsStream("outputfueltypes.xml");
+		String xmlString = "";
+		int i;
+		char c;
+		while ((i = xml.read()) != -1) {
+			c = (char) i;
+			xmlString += c;
+		}
+		
+		return Response.ok().entity(xmlString).build();
+	}
+	
+	@GET
+	@Path("/xml/postcodes")
+	@Produces("application/xml")
+	public Response getPostcodeXML() throws IOException {
+		ClassLoader cl = this.getClass().getClassLoader();
+		InputStream xml = cl.getResourceAsStream("outputpostcodes.xml");
+		String xmlString = "";
+		int i;
+		char c;
+		while ((i = xml.read()) != -1) {
+			c = (char) i;
+			xmlString += c;
+		}
+		
+		return Response.ok().entity(xmlString).build();
+	}
+	
+	@GET
+	@Path("/xml/allVehicleTypes")
+	@Produces("application/xml")
+	public Response listAllVehicleTypesXML(@QueryParam("sortBy") String sorting) {
+		String responseString = carRegistrationDataDAO.getAllVehicleTypesXML(sorting);
+		
+		return Response.ok().entity(responseString).build();
 	}
 }

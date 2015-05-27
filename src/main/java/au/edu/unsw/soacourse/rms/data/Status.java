@@ -6,7 +6,8 @@ public enum Status {
 	REQUESTED("requested"), 
 	UNDER_REVIEW("under-review"), 
 	ACCEPTED("accepted"), 
-	ARCHIVED("archived"), 
+	ARCHIVED("archived"),
+	PAID("paid"),
 	REJECTED("rejected");
 	
 	private final String status;

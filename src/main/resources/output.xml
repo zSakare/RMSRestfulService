@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<Root>
+    <Type>HeavyPlants</Type>
+    <Type>HeavyTrucks</Type>
+    <Type>LightPlants</Type>
+    <Type>LightTrucks</Type>
+    <Type>MobileHomes</Type>
+    <Type>MotorCycles</Type>
+    <Type>OffRoadVehicles</Type>
+    <Type>PassengerVehicles</Type>
+    <Type>PeopleMovers</Type>
+    <Type>PrimeMovers</Type>
+    <Type>Scooters</Type>
+    <Type>SmallBuses</Type>
+    <Type>SmallTrailers</Type>
+    <Type>Total</Type>
+    <Type>Trailers</Type>
+</Root>

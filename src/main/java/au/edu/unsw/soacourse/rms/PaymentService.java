@@ -15,24 +15,38 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import au.edu.unsw.soacourse.rms.data.CarRegistration;
 import au.edu.unsw.soacourse.rms.data.Payment;
 import au.edu.unsw.soacourse.rms.data.RenewalNotice;
+import au.edu.unsw.soacourse.rms.data.Status;
+import au.edu.unsw.soacourse.rms.datastore.CarRegistrationDAO;
 import au.edu.unsw.soacourse.rms.datastore.PaymentDAO;
 import au.edu.unsw.soacourse.rms.datastore.RenewalNoticeDAO;
 
 @Path("/payment")
 public class PaymentService {
+	private final static String OFFICER_KEY = "officer";
+	private final static String DRIVER_KEY = "driver";
 	
 	@Autowired
 	private RenewalNoticeDAO renewalNoticeDAO;
 	
 	@Autowired
 	private PaymentDAO paymentDAO;
+
+	@Autowired
+	private CarRegistrationDAO carRegistrationDAO;
 	
 	@POST
 	@Path("/new")
 	@Produces("application/json")
-	public Response generatePaymentNotice(@QueryParam("rego") String rego, @QueryParam("fee") String fee) throws URISyntaxException {
+	public Response generatePaymentNotice(@QueryParam("rego") String rego, @QueryParam("fee") String fee, @QueryParam("auth") String key) throws URISyntaxException {
+		if (key == null || key.isEmpty()) {
+			return Response.status(401).build();
+		} else if (!key.equals(OFFICER_KEY)) {
+			return Response.status(403).build();
+		}
+		
 		Payment payment = new Payment();
 		payment.setAmount(fee);
 		
@@ -54,12 +68,23 @@ public class PaymentService {
 	public Response makePayment(@QueryParam("rego") String rego, 
 								@QueryParam("name") String name, 
 								@QueryParam("expiry") String expiry, 
-								@QueryParam("number") String number) {
+								@QueryParam("number") String number,
+								@QueryParam("auth") String key) {
+		if (key == null || key.isEmpty()) {
+			return Response.status(401).build();
+		} else if (!key.equals(DRIVER_KEY)) {
+			return Response.status(403).build();
+		}
+		
 		Payment payment = paymentDAO.retrievePayment(rego);
 		payment.setCcExpiry(expiry);
 		payment.setCcName(name);
 		payment.setCcNumber(number);
 		payment.setPaidDate(new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+		payment.getRenewal().setStatus(Status.PAID);
+		
+		CarRegistration carRego = carRegistrationDAO.retrieveRegistration(rego);
+		carRego.setLastRegistered(payment.getPaidDate());
 		
 		return Response.ok().entity(payment).build();
 	}
