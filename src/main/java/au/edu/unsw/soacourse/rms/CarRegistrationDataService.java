@@ -172,4 +172,31 @@ public class CarRegistrationDataService {
 		
 		return Response.ok().entity(responseString).build();
 	}
+	
+	@GET
+	@Path("/xml/allFuelTypes")
+	@Produces("application/xml")
+	public Response listAllFuelTypesXML(@QueryParam("sortBy") String sorting) {
+		String responseString = carRegistrationDataDAO.getAllFuelTypesXML(sorting);
+		
+		return Response.ok().entity(responseString).build();
+	}
+	
+	@GET
+	@Path("/xml/fuelType")
+	@Produces("application/xml")
+	public Response listFuelTypeXML(@QueryParam("sortBy") String sorting, @QueryParam("type") String type) {
+		String responseString = carRegistrationDataDAO.getFuelTypesXML(sorting, type);
+		
+		return Response.ok().entity(responseString).build();
+	}
+	
+	@GET
+	@Path("/xml/postcode")
+	@Produces("application/xml")
+	public Response listPostcodeXML(@QueryParam("sortBy") String sorting, @QueryParam("code") String code) {
+		String responseString = carRegistrationDataDAO.getPostcodeXML(sorting, code);
+		
+		return Response.ok().entity(responseString).build();
+	}
 }

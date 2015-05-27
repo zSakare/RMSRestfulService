@@ -140,6 +140,89 @@ public class CarRegistrationDataDAO {
 		
 		return returnXml;
 	}
+
+	public String getAllFuelTypesXML(String sortBy) {
+		ClassLoader cl = this.getClass().getClassLoader();
+		InputStream xsl = cl.getResourceAsStream("allFuelTypes.xsl");
+		InputStream xml = cl.getResourceAsStream("outputfueltypes.xml");
+		Source xslSource = new StreamSource(xsl);
+		Source xmlSource = new StreamSource(xml);
+		
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance().newTransformer(xslSource);
+			if (sortBy != null) {
+				transformer.setParameter("sort", sortBy);
+			}
+			transformer.transform(xmlSource, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		StringBuffer sb = writer.getBuffer();
+		String returnXml = sb.toString();
+		
+		return returnXml;
+	}
+
+	public String getFuelTypesXML(String sortBy, String type) {
+		ClassLoader cl = this.getClass().getClassLoader();
+		InputStream xsl = cl.getResourceAsStream("byFuelType.xsl");
+		InputStream xml = cl.getResourceAsStream("outputfueltypes.xml");
+		Source xslSource = new StreamSource(xsl);
+		Source xmlSource = new StreamSource(xml);
+		
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance().newTransformer(xslSource);
+			if (sortBy != null) {
+				transformer.setParameter("sort", sortBy);
+			}
+			transformer.setParameter("type", type);
+			transformer.transform(xmlSource, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		StringBuffer sb = writer.getBuffer();
+		String returnXml = sb.toString();
+		
+		return returnXml;
+	}
+
+	public String getPostcodeXML(String sortBy, String code) {
+		ClassLoader cl = this.getClass().getClassLoader();
+		InputStream xsl = cl.getResourceAsStream("byPostcode.xsl");
+		InputStream xml = cl.getResourceAsStream("outputpostcodes.xml");
+		Source xslSource = new StreamSource(xsl);
+		Source xmlSource = new StreamSource(xml);
+		
+		StringWriter writer = new StringWriter();
+		StreamResult result = new StreamResult(writer);
+		
+		Transformer transformer;
+		try {
+			transformer = TransformerFactory.newInstance().newTransformer(xslSource);
+			if (sortBy != null) {
+				transformer.setParameter("sort", sortBy);
+			}
+			transformer.setParameter("code", code);
+			transformer.transform(xmlSource, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		StringBuffer sb = writer.getBuffer();
+		String returnXml = sb.toString();
+		
+		return returnXml;
+	}
 	
 	private NodeList getPostcodeRegistrationEntries() {
 		ClassLoader cl = this.getClass().getClassLoader();

@@ -2,15 +2,12 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 	<xsl:output method="xml" indent="yes"/>
 	<xsl:strip-space elements="*"/>
-	<xsl:param name="sort"/>
+	<xsl:param name="sort" select="'ascending'"/>
 	<xsl:template match="/Root/Entry[1]">
 		<Root>
 		<xsl:for-each select="*">
-			<xsl:if test="$sort">
-				<xsl:sort select="local-name()" order="$sort"/>
-			</xsl:if>
-			<xsl:variable name="counter" select="position()"/>
-			<xsl:if test="(($counter!=1) and ($counter!=2))">
+			<xsl:sort select="local-name()" order="{$sort}"/>
+			<xsl:if test="((local-name()!='FuelType') and (local-name()!='Total'))">
 				<xsl:text>&#xa;</xsl:text><xsl:text>    </xsl:text>
 				<Type><xsl:value-of select="local-name()"/></Type>
 			</xsl:if>
